@@ -1,95 +1,140 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import React, { Component } from 'react';
+import './page.module.css';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+class Calculator extends Component {
+  constructor() {
+    super();
+    this.state = {
+      display: '0',
+      currentInput: '',
+      operator: '',
+      prevInput: ''
+    };
+  }
+
+  handleNumberClick = (num) => {
+    const { display, currentInput, operator } = this.state;
+
+    if (display === '0' || operator === '=') {
+      this.setState({
+        display: num.toString(),
+        currentInput: num.toString(),
+        operator: ''
+      });
+    } else {
+      this.setState({
+        display: currentInput + num.toString(),
+        currentInput: currentInput + num.toString()
+      });
+    }
+  };
+
+  handleOperatorClick = (op) => {
+    const { display, currentInput, operator, prevInput } = this.state;
+
+    if (operator === '') {
+      this.setState({
+        operator: op,
+        prevInput: currentInput,
+        currentInput: ''
+      });
+    } else if (operator === '=') {
+      this.setState({
+        operator: op,
+        prevInput: display,
+        currentInput: ''
+      });
+    } else {
+      const result = this.calculate(prevInput, currentInput, operator);
+      this.setState({
+        display: result.toString(),
+        operator: op,
+        prevInput: result.toString(),
+        currentInput: ''
+      });
+    }
+  };
+
+  handleEqualsClick = () => {
+    const { prevInput, currentInput, operator } = this.state;
+
+    if (prevInput !== '' && currentInput !== '' && operator !== '=') {
+      const result = this.calculate(prevInput, currentInput, operator);
+      this.setState({
+        display: result.toString(),
+        operator: '=',
+        prevInput: result.toString(),
+        currentInput: ''
+      });
+    }
+  };
+
+  handleClearClick = () => {
+    this.setState({
+      display: '0',
+      currentInput: '',
+      operator: '',
+      prevInput: ''
+    });
+  };
+
+  calculate = (num1, num2, operator) => {
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
+
+    switch (operator) {
+      case '+':
+        return num1 + num2;
+      case '-':
+        return num1 - num2;
+      case '*':
+        return num1 * num2;
+      case '/':
+        return num1 / num2;
+      case '%':
+        return (num1 / 100) * num2;
+      default:
+        return 0;
+    }
+  };
+
+  render() {
+    return (
+      <div className="calculator">
+        <div className="display">{this.state.display}</div>
+        <div className="buttons">
+          <div className="row">
+            <button onClick={() => this.handleNumberClick(7)}>7</button>
+            <button onClick={() => this.handleNumberClick(8)}>8</button>
+            <button onClick={() => this.handleNumberClick(9)}>9</button>
+            <button onClick={() => this.handleOperatorClick('/')}>/</button>
+          </div>
+          <div className="row">
+            <button onClick={() => this.handleNumberClick(4)}>4</button>
+            <button onClick={() => this.handleNumberClick(5)}>5</button>
+            <button onClick={() => this.handleNumberClick(6)}>6</button>
+            <button onClick={() => this.handleOperatorClick('*')}>*</button>
+          </div>
+          <div className="row">
+            <button onClick={() => this.handleNumberClick(1)}>1</button>
+            <button onClick={() => this.handleNumberClick(2)}>2</button>
+            <button onClick={() => this.handleNumberClick(3)}>3</button>
+            <button onClick={() => this.handleOperatorClick('-')}>-</button>
+          </div>
+          <div className="row">
+            <button onClick={() => this.handleNumberClick(0)}>0</button>
+            <button onClick={this.handleClearClick}>C</button>
+            <button onClick={this.handleEqualsClick}>=</button>
+            <button onClick={() => this.handleOperatorClick('+')}>+</button>
+          </div>
+          <div className="row">
+            <button onClick={() => this.handleOperatorClick('%')}>%</button>
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    );
+  }
 }
+
+export default Calculator;
