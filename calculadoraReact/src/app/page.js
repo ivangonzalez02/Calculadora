@@ -1,140 +1,88 @@
 "use client"
-import React, { Component } from 'react';
-import './page.module.css';
+import React, { useState } from "react";
+import "./styles.css";
 
-class Calculator extends Component {
-  constructor() {
-    super();
-    this.state = {
-      display: '0',
-      currentInput: '',
-      operator: '',
-      prevInput: ''
-    };
-  }
+export default function App() {
+  const [input, setInput] = useState("");
+  const [result, setResult] = useState("");
 
-  handleNumberClick = (num) => {
-    const { display, currentInput, operator } = this.state;
+  const handleClick = (e) => {
+    setInput(input.concat(e.target.name));
+  };
 
-    if (display === '0' || operator === '=') {
-      this.setState({
-        display: num.toString(),
-        currentInput: num.toString(),
-        operator: ''
-      });
-    } else {
-      this.setState({
-        display: currentInput + num.toString(),
-        currentInput: currentInput + num.toString()
-      });
+  const handleClear = () => {
+    setInput("");
+    setResult("");
+  };
+
+  const handleEqual = () => {
+    try {
+      setResult(eval(input));
+    } catch (error) {
+      setResult("Error");
     }
   };
 
-  handleOperatorClick = (op) => {
-    const { display, currentInput, operator, prevInput } = this.state;
-
-    if (operator === '') {
-      this.setState({
-        operator: op,
-        prevInput: currentInput,
-        currentInput: ''
-      });
-    } else if (operator === '=') {
-      this.setState({
-        operator: op,
-        prevInput: display,
-        currentInput: ''
-      });
-    } else {
-      const result = this.calculate(prevInput, currentInput, operator);
-      this.setState({
-        display: result.toString(),
-        operator: op,
-        prevInput: result.toString(),
-        currentInput: ''
-      });
-    }
-  };
-
-  handleEqualsClick = () => {
-    const { prevInput, currentInput, operator } = this.state;
-
-    if (prevInput !== '' && currentInput !== '' && operator !== '=') {
-      const result = this.calculate(prevInput, currentInput, operator);
-      this.setState({
-        display: result.toString(),
-        operator: '=',
-        prevInput: result.toString(),
-        currentInput: ''
-      });
-    }
-  };
-
-  handleClearClick = () => {
-    this.setState({
-      display: '0',
-      currentInput: '',
-      operator: '',
-      prevInput: ''
-    });
-  };
-
-  calculate = (num1, num2, operator) => {
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-
-    switch (operator) {
-      case '+':
-        return num1 + num2;
-      case '-':
-        return num1 - num2;
-      case '*':
-        return num1 * num2;
-      case '/':
-        return num1 / num2;
-      case '%':
-        return (num1 / 100) * num2;
-      default:
-        return 0;
-    }
-  };
-
-  render() {
-    return (
+  return (
+    <div className="App">
+      <h1>React Calculator</h1>
       <div className="calculator">
-        <div className="display">{this.state.display}</div>
-        <div className="buttons">
-          <div className="row">
-            <button onClick={() => this.handleNumberClick(7)}>7</button>
-            <button onClick={() => this.handleNumberClick(8)}>8</button>
-            <button onClick={() => this.handleNumberClick(9)}>9</button>
-            <button onClick={() => this.handleOperatorClick('/')}>/</button>
-          </div>
-          <div className="row">
-            <button onClick={() => this.handleNumberClick(4)}>4</button>
-            <button onClick={() => this.handleNumberClick(5)}>5</button>
-            <button onClick={() => this.handleNumberClick(6)}>6</button>
-            <button onClick={() => this.handleOperatorClick('*')}>*</button>
-          </div>
-          <div className="row">
-            <button onClick={() => this.handleNumberClick(1)}>1</button>
-            <button onClick={() => this.handleNumberClick(2)}>2</button>
-            <button onClick={() => this.handleNumberClick(3)}>3</button>
-            <button onClick={() => this.handleOperatorClick('-')}>-</button>
-          </div>
-          <div className="row">
-            <button onClick={() => this.handleNumberClick(0)}>0</button>
-            <button onClick={this.handleClearClick}>C</button>
-            <button onClick={this.handleEqualsClick}>=</button>
-            <button onClick={() => this.handleOperatorClick('+')}>+</button>
-          </div>
-          <div className="row">
-            <button onClick={() => this.handleOperatorClick('%')}>%</button>
-          </div>
+        <input type="text" value={input} readOnly />
+        <input type="text" value={result} readOnly />
+        <div className="keypad">
+        <button name="7" onClick={handleClick}>
+            7
+          </button>
+          <button name="8" onClick={handleClick}>
+            8
+          </button>
+          <button name="9" onClick={handleClick}>
+            9
+          </button>
+          <button className="highlight" onClick={handleClear}>
+            C
+          </button>
+          <button name="4" onClick={handleClick}>
+            4
+          </button>
+          <button name="5" onClick={handleClick}>
+            5
+          </button>
+          <button name="6" onClick={handleClick}>
+            6
+          </button>
+          <button name="%" onClick={handleClick}>
+            %
+          </button>
+          <button name="1" onClick={handleClick}>
+            1
+          </button>
+          <button name="2" onClick={handleClick}>
+            2
+          </button>
+          <button name="3" onClick={handleClick}>
+            3
+          </button>
+          <button name="/" onClick={handleClick}>
+            /
+          </button>
+          <button name="*" onClick={handleClick}>
+            *
+          </button>
+          <button name="-" onClick={handleClick}>
+            -
+          </button>
+          <button name="+" onClick={handleClick}>
+            +
+          </button>
+          <button name="0" onClick={handleClick}>
+            0
+          </button>
+          <button className="highlight" onClick={handleEqual}>
+            =
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-export default Calculator;
